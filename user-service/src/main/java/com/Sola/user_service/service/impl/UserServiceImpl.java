@@ -4,7 +4,6 @@ import com.Sola.resume_creation_service.dto.ResumeCreationRequest;
 import com.Sola.resume_creation_service.dto.SummaryDto;
 import com.Sola.resume_creation_service.model.Resume;
 import com.Sola.resume_upload_service.dto.ResumeUploadRequest;
-import com.Sola.resume_upload_service.model.ResumeUploadEntity;
 import com.Sola.user_service.dto.UserRegistrationRequest;
 import com.Sola.user_service.exception.UserNotFoundException;
 import com.Sola.user_service.model.UserEntity;
@@ -15,7 +14,6 @@ import com.Sola.user_service.service.ResumeCreationClient;
 import com.Sola.user_service.service.ResumeUploadClient;
 import com.Sola.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -74,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity savedUser = userRepository.save(userEntity);
 
-//        return userRepository.save(userEntity);
+//        return userRepository.save(savedUser);
 
         ResumeCreationRequest resumeRequest = ResumeCreationRequest.builder()
                 .templateId(2L)
@@ -85,18 +83,25 @@ public class UserServiceImpl implements UserService {
                 .skillsList(new ArrayList<>())
                 .summary(new SummaryDto())
                 .referenceList(new ArrayList<>())
-//                .userId(savedUser.getId()) // Optionally Link Resume to User
                 .build();
+
 
         Resume createdResume = resumeCreationClient.createResume(resumeRequest);
 
-////        Resume file upload logic below
-//        if (file != null && !file.isEmpty()){
-//             resumeUploadClient.uploadResume(file);
-//        }
-//
-//        return savedUser;
-        return userEntity;
+        if (createdResume != null && createdResume.getId() != null) {
+
+            savedUser.setResumeId(String.valueOf(createdResume.getId()));
+        }
+
+
+        if (file != null && !file.isEmpty() && resumeUploadClient != null) {
+            ResumeUploadRequest uploadRequest = new ResumeUploadRequest();
+            uploadRequest.setFilePart(file);
+            resumeUploadClient.uploadResume(uploadRequest);
+
+        }
+
+        return userRepository.save(savedUser);
     }
 
 

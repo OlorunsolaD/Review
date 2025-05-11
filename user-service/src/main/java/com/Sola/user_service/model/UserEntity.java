@@ -28,4 +28,6 @@ public class UserEntity {
     private Set<UserRole> roles; //To store multiple roles such as user and admin
     private UserStatus Status;
 
+    private String resumeId;
+
 }

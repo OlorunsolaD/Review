@@ -10,17 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "resume-upload-service")
-@RequestMapping("/api/v2/resumes")
+@FeignClient(name = "resume-upload-service", path = "/api/v2/resumes")
 public interface ResumeUploadClient {
 
     @PostMapping(value = "/uploadCV", consumes = "multipart/form-data")
     ResponseEntity<ResumeUploadEntity> uploadResume(@ModelAttribute ResumeUploadRequest resumeUploadRequest);
 
     @PutMapping(value = "/updateCV/{id}", consumes = "multipart/form-data")
-    ResponseEntity<String> updateResume(@PathVariable("id") String id,
-                                        @RequestParam("file") MultipartFile file,
-                                        @RequestParam("userId") String userId);
+    ResponseEntity<String> updateResume (@PathVariable("id") @RequestParam("file") MultipartFile file);
 
     @GetMapping("/findCV/{id}")
     ResponseEntity<ResumeUploadEntity> getResumeById (@PathVariable("id") String id);

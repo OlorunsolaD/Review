@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "resume-creation-service", fallback= ResumeCreationFallback.class)
-@RequestMapping("/api/v1/resumes")
+@FeignClient(name = "resume-creation-service", fallback= ResumeCreationFallback.class, path ="/api/v1/resumes" )
 public interface ResumeCreationClient {
 
     @PostMapping("/create")

@@ -33,6 +33,6 @@ public class UserRegistrationRequest {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-    private boolean isAdmin;
+    private boolean isAdmin =false;
 
 }

@@ -1,30 +1,24 @@
 package com.Sola.user_service.service.impl;
-import com.Sola.resume_creation_service.dto.ContactDto;
-import com.Sola.resume_creation_service.dto.ResumeCreationRequest;
-import com.Sola.resume_creation_service.dto.SummaryDto;
-import com.Sola.resume_creation_service.model.Resume;
-import com.Sola.resume_upload_service.dto.ResumeUploadRequest;
 import com.Sola.user_service.dto.UserRegistrationRequest;
+import com.Sola.user_service.dto.UserResponseDto;
+import com.Sola.user_service.exception.EmailAlreadyExistException;
 import com.Sola.user_service.exception.UserNotFoundException;
 import com.Sola.user_service.model.UserEntity;
 import com.Sola.user_service.model.UserRole;
 import com.Sola.user_service.model.UserStatus;
 import com.Sola.user_service.repository.UserRepository;
-import com.Sola.user_service.service.ResumeCreationClient;
-import com.Sola.user_service.service.ResumeUploadClient;
 import com.Sola.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Service
@@ -33,22 +27,22 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ResumeCreationClient resumeCreationClient;
-    private final ResumeUploadClient resumeUploadClient;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder,
-                           ResumeCreationClient resumeCreationClient,
-                           ResumeUploadClient resumeUploadClient) {
+                           PasswordEncoder passwordEncoder
+                          ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.resumeCreationClient = resumeCreationClient;
-        this.resumeUploadClient = resumeUploadClient;
+
     }
 
 
-    public UserEntity createUserandResume(UserRegistrationRequest userRegistrationRequest, MultipartFile file) {
+    public UserEntity createUser(UserRegistrationRequest userRegistrationRequest) {
+
+        if (userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistException("Email already exist");
+        }
 
         // Encode Password
         String hashedPassword = passwordEncoder.encode(userRegistrationRequest.getPassword());
@@ -61,7 +55,10 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        String userId = UUID.randomUUID().toString();
+
         UserEntity userEntity = UserEntity.builder()
+                .userId(userId) // Add the unique user Id
                 .fullName(userRegistrationRequest.getFullName())
                 .email(userRegistrationRequest.getEmail())
                 .phoneNumber(userRegistrationRequest.getPhoneNumber())
@@ -70,38 +67,11 @@ public class UserServiceImpl implements UserService {
                 .roles(roles)
                 .build();
 
-        UserEntity savedUser = userRepository.save(userEntity);
-
-//        return userRepository.save(savedUser);
-
-        ResumeCreationRequest resumeRequest = ResumeCreationRequest.builder()
-                .templateId(2L)
-                .contact(new ContactDto())
-                .educationList(new ArrayList<>())
-                .experienceList(new ArrayList<>())
-                .certificationList(new ArrayList<>())
-                .skillsList(new ArrayList<>())
-                .summary(new SummaryDto())
-                .referenceList(new ArrayList<>())
-                .build();
+//        UserEntity savedUser = userRepository.save(userEntity);
 
 
-        Resume createdResume = resumeCreationClient.createResume(resumeRequest);
 
-        if (createdResume != null && createdResume.getId() != null) {
-
-            savedUser.setResumeId(String.valueOf(createdResume.getId()));
-        }
-
-
-        if (file != null && !file.isEmpty() && resumeUploadClient != null) {
-            ResumeUploadRequest uploadRequest = new ResumeUploadRequest();
-            uploadRequest.setFilePart(file);
-            resumeUploadClient.uploadResume(uploadRequest);
-
-        }
-
-        return userRepository.save(savedUser);
+        return userRepository.save(userEntity);
     }
 
 
@@ -143,6 +113,13 @@ public class UserServiceImpl implements UserService {
         // Map to UserRegistrationRequest DTO and return the response
         return mapToUserRegistrationRequest(updatedUserEntity);
     }
+
+    public UserRegistrationRequest findByUserId(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return mapToUserRegistrationRequest(userEntity);
+    }
+
 
     @Override
     public UserRegistrationRequest findUserById(String id) throws UserNotFoundException {

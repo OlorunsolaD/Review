@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: notification-service
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: femiolailerioluwa@gmail.com
+    password: twny mnag kkbl cwwo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/notificationdb
+
+
+notification:
+  email:
+    enabled: true
+
+
+email:
+  service:
+    type: send-grid
+
+
+reviewyme:
+  user-service:
+    base-url: http://localhost:9997

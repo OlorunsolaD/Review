@@ -11,24 +11,32 @@
         <module name="payment-service" />
         <module name="resume-creation-service" />
         <module name="review-service" />
-        <module name="resume-upload-service" />
+        <module name="spring-cloud-gateway" />
         <module name="user-service" />
+        <module name="resume-upload-service" />
         <module name="admin-service" />
         <module name="notification-service" />
-        <module name="cloud-gateway" />
+      </profile>
+      <profile name="Annotation profile for chassis" enabled="true">
+        <sourceOutputDir name="../target/generated-sources" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="chassis-core" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="admin-service" options="-parameters" />
-      <module name="cloud-gateway" options="-parameters" />
+      <module name="chassis" options="-parameters" />
+      <module name="chassis-core" options="-parameters" />
       <module name="notification-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
       <module name="resume-ai-service" options="-parameters" />
       <module name="resume-creation-service" options="-parameters" />
       <module name="resume-upload-service" options="-parameters" />
       <module name="review-service" options="-parameters" />
+      <module name="spring-cloud-gateway" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

@@ -30,13 +30,13 @@ public class SecurityConfig {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(Request -> Request
-                        .requestMatchers("/users/register", "users/login", "/users/find/{id}").permitAll() // Publicly accessible endpoints
-                        .requestMatchers("/users/status/id").hasRole("ADMIN") // Admin only endpoint
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/v1/user/register", "/api/v1/user/login", "/api/v1/user/find/{id}", "/api/v1/user/{userId}").permitAll() // Publicly accessible endpoints
+                        .requestMatchers("/api/v1/user/status/id").hasRole("ADMIN") // Admin only endpoint
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/users/logout")
+                        .logoutUrl("/api/v1/user/logout")
                         .permitAll()
                 )
                 .userDetailsService(customUserDetailsService)

@@ -7,3 +7,10 @@ server:
   port: 8035
 
 
+ai:
+  openai:
+    api-key: "${API_KEY}"
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/resume_ai

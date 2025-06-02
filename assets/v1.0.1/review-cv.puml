@@ -1,0 +1,34 @@
+
+@startuml
+actor User
+participant "Resume Service" as RS
+participant "Review Service" as ReS
+participant "Notification Service" as NS
+participant "Payment Service" as PS
+actor Admin
+
+User -> RS: 1. Click 'get your CV reviewed'
+RS -> User: 2. Prompt to upload CV
+User -> RS: 3. Prompt User to Login or Signup
+User -> RS: 4. Upload CV
+RS -> User: 5. Prompt Payment Plan (Standard £50 / Priority £80)
+User -> PS: 6. Select Payment Plan
+PS -> PS: 7. Process Payment
+PS -> RS: 8. Payment Confirmation
+RS -> User: 9. Push 'review in progress' message
+RS -> ReS: 10. Notify new review request
+ReS -> NS: 11. Notify Admin of new review request
+NS -> Admin: 12. Send notification
+ReS -> User: 13. Update status to pending
+Admin -> ReS: 14. Review CV
+ReS -> Admin: 15. Admin reviews CV
+ReS -> User: 16. Update status to in-progress
+Admin -> ReS: 17. Complete review and provide feedback
+ReS -> NS: 18. Notify User of review completion
+NS -> User: 19. Send Notification
+ReS -> User: 20. Update status to completed
+User -> RS: 21. Login to view reviewed CV
+RS -> User: 22. Display reviewed CV and feedback
+User -> RS: 23. Download CV
+@enduml
+

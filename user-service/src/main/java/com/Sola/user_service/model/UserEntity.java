@@ -19,6 +19,7 @@ public class UserEntity {
     @Id
     private String id;
 
+    private String userId; // unique userId
     private String username;
     private String password;
     private String fullName;
@@ -28,6 +29,7 @@ public class UserEntity {
     private Set<UserRole> roles; //To store multiple roles such as user and admin
     private UserStatus Status;
 
-    private String resumeId;
+//    private String resumeId;
+
 
 }

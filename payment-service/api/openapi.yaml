@@ -75,28 +75,69 @@ components:
   schemas:
     InitiatePaymentRequest:
       type: object
+      description: Request payload for initiating a payment transaction.
       properties:
-        userId:
+        customer:
+          $ref: "#/components/schemas/CustomerDetails"
+        product:
+          $ref: "#/components/schemas/ProductDetails"
+        payment:
+          $ref: "#/components/schemas/PaymentInfo"
+      required:
+        - user
+        - product
+        - payment
+
+    CustomerDetails:
+      type: object
+      description: User (customer) information required for the transaction.
+      properties:
+        id:
           type: string
-          example: 75bc66c48a67fc-1722290520376
-        productName:
+          description: Unique identifier for the user.
+          example: "683b04c9b2ea75795fc091e0"
+      required:
+        - id
+
+    ProductDetails:
+      type: object
+      description: Product details being purchased.
+      properties:
+        name:
           type: string
-          example: PRODUCT CV REVIEW
-        amount:
-          type: number
-          example: 56.75
+          description: Name of the product or service.
+          example: "PLAN_50"
         quantity:
           type: integer
+          format: int32
+          description: Number of items being purchased.
           example: 1
+      required:
+        - name
+        - quantity
+
+    PaymentInfo:
+      type: object
+      description: Payment details for the transaction.
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Transaction amount.
+          example: 56.75
         currency:
           type: string
-          example: GBP
+          description: Three-letter ISO 4217 currency code.
+          example: "GBP"
+          enum:
+            - USD
+            - GBP
+            - EUR
+            - JPY
       required:
-        - userId
-        - productName
         - amount
-        - quantity
         - currency
+
     InitiatePaymentResponse:
       type: object
       properties:
@@ -106,6 +147,7 @@ components:
         paymentLink:
           type: string
           example: "https://localhost.com:8090"
+
     VerifyPaymentResponse:
       type: object
       properties:
@@ -115,6 +157,7 @@ components:
         referenceId:
           type: string
           example: "REF123456789"
+
     GetUserPaymentsResponse:
       type: object
       properties:

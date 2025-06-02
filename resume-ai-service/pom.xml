@@ -3,10 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.2</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <groupId>com.reviewyme</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>0.0.1</version>
 </parent>
 <groupId>com.sola</groupId>
 <artifactId>resume-ai-service</artifactId>
@@ -28,9 +27,10 @@
 </scm>
 <properties>
     <java.version>21</java.version>
-<!--    <spring-ai.version>1.0.0-M5</spring-ai.version>-->
+    <spring-ai.version>1.0.0-M5</spring-ai.version>
 </properties>
 <dependencies>
+
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-actuator</artifactId>
@@ -51,6 +51,12 @@
     </dependency>
 
     <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-tika-document-reader</artifactId>
+        <version>1.0.0-M5</version>
+    </dependency>
+
+    <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <optional>true</optional>
@@ -64,15 +70,27 @@
 
 
     <dependency>
-        <groupId>com.itextpdf</groupId>
-        <artifactId>itextpdf</artifactId>
-        <version>5.5.13.4</version>
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>pdfbox</artifactId>
+        <version>3.0.4</version>
     </dependency>
+
+    <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-core</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+
 
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.reviewyme</groupId>
+        <artifactId>user-service</artifactId>
+        <version>0.0.1</version>
     </dependency>
 </dependencies>
 

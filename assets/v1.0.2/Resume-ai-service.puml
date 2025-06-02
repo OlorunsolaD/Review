@@ -1,0 +1,61 @@
+@startuml
+actor User
+participant RS as "Resume Service"
+participant TS as "Template Service"
+participant PS as "Payment Service"
+participant AI as "AI Engine"
+participant Admin
+participant NS as "Notification Service"
+
+' Start of process
+User -> RS: 1. Click 'Build Your CV or Upload CV'
+RS -> TS: 2. Prompt to Choose Template
+TS -> User: 3. Display Template Options
+User -> TS: 4. Select Template
+TS -> RS: 5. Send Selected Template
+RS -> User: "6. Prompt to Fill Details Manually or with AI\n(Contact, Experience, Education, etc.)"
+User -> RS: 7. Submit Details or Job Descriptions
+
+alt "AI Assistance Needed"
+  RS -> AI: 8. Generate Experience from Job Descriptions
+  RS -> AI: 9. Generate Skills if not provided
+  RS -> AI: 10. Generate Summary if not provided
+  AI -> RS: 11. Return AI-generated Experience, Skills, Summary
+  RS -> User: 12. Display AI-generated content
+  User -> RS: 13. Confirm or Edit AI content
+end
+
+RS -> User: 14. Display 'CV Creation Completed'
+RS -> User: 15. Choose Option:\n a) £4 Download/Email\n b) £50/£80 Expert Review
+User -> RS: 16. Select Option
+
+alt "£4 Plan Selected"
+  User -> PS: 17. Select £4 Plan
+  PS -> PS: 18. Process Payment
+  PS -> RS: 19. Confirm Payment
+  RS -> User: 20. Prompt Login/Register
+  User -> RS: 21. Login/Register
+  RS -> User: 22. Provide Download Link (PDF/DOC)
+  RS -> User: 23. Send CV to Email
+  RS -> User: 24. Offer Upgrade to Expert Review
+
+else "£50/£80 Plan Selected"
+  User -> PS: 25. Select £50/£80 Plan
+  PS -> PS: 26. Process Payment
+  PS -> RS: 27. Confirm Payment
+  RS -> User: 28. Prompt Login/Register
+  User -> RS: 29. Login/Register
+  RS -> Admin: 30. Assign CV to Expert
+  RS -> User: 31. Display 'Review in Progress'
+  Admin -> RS: 32. Update CV
+  Admin -> RS: 33. Complete Review and Feedback
+  RS -> NS: 34. Notify User of Completion
+  NS -> User: 35. Send Notification
+  RS -> User: 36. Update Status to Completed
+  User -> RS: 37. Login to View Reviewed CV
+  RS -> User: 38. Display CV and Feedback
+  RS -> User: 39. Provide Download Link (PDF/DOC)
+  RS -> User: 40. Send CV to Email
+  User -> RS: 41. Download CV
+end
+@enduml

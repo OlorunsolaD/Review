@@ -1,10 +1,21 @@
 spring:
   application:
     name: payment-service
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
   data:
     mongodb:
       uri: mongodb://localhost:27017/
       database: payment-service
+
+  cloud:
+    config:
+      uri: http://localhost:8888
 
 stripe:
   secretKey: sk_test_51RAVJcPdZcurC6UqMMuRbTOpFXOuig5SOv9nWrA4bTpcVfyeI9QaIXhrRU9veA6SEAFUzc4l2KOlSSxTngCWXJCF00rcjauBxc

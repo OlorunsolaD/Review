@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: payment-service
+  config:
+    activate:
+      on-profile: local
+
+server:
+  port: 3331
+

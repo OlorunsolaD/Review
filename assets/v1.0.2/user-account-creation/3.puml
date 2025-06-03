@@ -1,0 +1,45 @@
+3. Expert User Creation Flow (by Admin)
+This is the secure, role-based flow. It demonstrates how the JWT obtained from logging in is used to authorize the admin to create an expert user.
+
+@startuml
+title 3. Expert User Creation Flow (by Admin)
+
+actor "Client (Admin)" as Client
+participant "API Gateway" as Gateway
+participant "User Service\n(Spring Boot)" as Service
+database "Database" as DB
+
+skinparam sequenceActorStyle awesome
+
+== Create Expert Request ==
+
+note left of Client: Admin must be logged in\nand have a valid JWT.
+
+Client -> Gateway: POST /api/users/expert\nHeader: Authorization: Bearer <jwt>
+Gateway -> Service: Forward Request
+
+activate Service
+' Spring Security Filter Chain runs first
+note right of Service
+    Spring Security Filter intercepts the request.
+    It validates the JWT signature & expiration
+    and extracts the user's roles.
+end note
+
+alt JWT is valid AND user role is 'ADMIN'
+    Service -> Service: **Authorization Granted**\n(Request proceeds to controller)
+    Service -> Service: Hash new expert's password
+    Service -> DB: INSERT INTO users (..., role='EXPERT')
+    activate DB
+    DB --> Service: User Created
+    deactivate DB
+    Service --> Gateway: **201 Created**
+else JWT is invalid OR user role is not 'ADMIN'
+    Service -> Service: **Authorization Denied**
+    Service --> Gateway: **403 Forbidden** (or 401 for bad token)
+end
+
+Gateway --> Client: Return response (201 or 403)
+deactivate Service
+
+@enduml

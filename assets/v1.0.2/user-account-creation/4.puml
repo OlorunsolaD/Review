@@ -1,0 +1,31 @@
+4. Public Customer Creation Flow
+This is the simplest flow, showing an open endpoint for public user registration.
+
+@startuml
+title 4. Public Customer Creation Flow
+
+actor "Client (Guest)" as Client
+participant "API Gateway" as Gateway
+participant "User Service\n(Spring Boot)" as Service
+database "Database" as DB
+
+skinparam sequenceActorStyle awesome
+
+== Create Customer Request ==
+
+Client -> Gateway: POST /api/users/customer\nBody: {firstName, ..., password}
+Gateway -> Service: Forward Request
+activate Service
+
+Service -> Service: Perform validations\n(e.g., email format, password strength)
+Service -> Service: Hash password
+Service -> DB: INSERT INTO users (..., role='CUSTOMER')
+activate DB
+DB --> Service: User Created
+deactivate DB
+
+Service --> Gateway: **201 Created**
+Gateway --> Client: Return 201 Created response
+deactivate Service
+
+@enduml

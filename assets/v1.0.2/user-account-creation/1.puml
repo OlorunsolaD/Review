@@ -1,0 +1,44 @@
+1. Initial Admin User Creation Flow
+This flow is a one-time setup action to bootstrap the first admin user using a secure, pre-configured token.
+
+@startuml
+title 1. Initial Admin User Creation Flow
+
+actor "Developer/Operator" as Dev
+participant "Secrets Manager /\nEnvironment" as Secrets
+participant "Client" as Client
+participant "API Gateway" as Gateway
+participant "User Service\n(Spring Boot)" as Service
+database "Database" as DB
+
+skinparam sequenceActorStyle awesome
+
+' Initial Setup Step
+Dev -> Secrets: Store MASTER_TOKEN
+note right: This is a prerequisite step,\ndone during deployment.
+
+== Admin Creation Request ==
+
+Client -> Gateway: POST /api/users/admin\nHeader: X-Master-Token: <token>
+Gateway -> Service: Forward Request
+
+activate Service
+
+Service -> Secrets: Get MASTER_TOKEN for comparison
+Service -> Service: **Validate X-Master-Token**
+
+alt Token is Valid
+    Service -> Service: Hash password
+    Service -> DB: INSERT INTO users (..., role='ADMIN')
+    activate DB
+    DB --> Service: User Created (ID: 1)
+    deactivate DB
+    Service --> Gateway: **201 Created**
+else Token is Invalid or Missing
+    Service --> Gateway: **401 Unauthorized**
+end
+
+Gateway --> Client: Return response (201 or 401)
+deactivate Service
+
+@enduml

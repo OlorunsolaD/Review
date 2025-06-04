@@ -8,6 +8,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>chassis-core</module>
+		<module>chassis-security</module>
 	</modules>
 
 	<parent>
@@ -102,6 +103,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>repackage</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
 				<configuration>
 					<excludes>
 						<exclude>

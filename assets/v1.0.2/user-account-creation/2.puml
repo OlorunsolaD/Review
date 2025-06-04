@@ -1,0 +1,42 @@
+2. Standard User Login Flow (e.g., Admin)
+This diagram shows how any registered user logs in to receive a JWT, which is required for subsequent authenticated actions.
+
+@startuml
+title 2. Standard User Login Flow (e.g., Admin)
+
+actor "Client" as Client
+participant "API Gateway" as Gateway
+participant "User Service\n(Spring Boot)" as Service
+database "Database" as DB
+
+skinparam sequenceActorStyle awesome
+
+== Login Request ==
+
+Client -> Gateway: POST /api/auth/login\nBody: {email, password}
+Gateway -> Service: Forward Request
+activate Service
+
+Service -> DB: SELECT * FROM users WHERE email = ?
+activate DB
+DB --> Service: Return User record (with hashed password & role)
+deactivate DB
+
+alt Credentials are Valid
+    note right of Service
+        Spring Security's AuthenticationManager
+        compares the plaintext password from the
+        request with the hashed password from the DB.
+    end note
+    Service -> Service: **Generate Signed JWT**\n(with userId, email, role, expiration)
+    Service --> Gateway: **200 OK**\nBody: { "jwt": "..." }
+else Credentials are Invalid
+    Service --> Gateway: **401 Unauthorized**
+end
+
+Gateway --> Client: Return response (200 or 401)
+deactivate Service
+
+Client -> Client: Securely store JWT for future requests
+
+@enduml

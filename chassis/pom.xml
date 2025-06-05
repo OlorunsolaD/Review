@@ -8,6 +8,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>chassis-core</module>
+		<module>chassis-security</module>
 	</modules>
 
 	<parent>

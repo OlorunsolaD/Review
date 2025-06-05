@@ -1,5 +1,6 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.repository;
 
+import com.reviewyme.userservice.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

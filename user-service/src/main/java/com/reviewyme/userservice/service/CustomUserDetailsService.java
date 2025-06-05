@@ -1,5 +1,7 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.service;
 
+import com.reviewyme.userservice.model.User;
+import com.reviewyme.userservice.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

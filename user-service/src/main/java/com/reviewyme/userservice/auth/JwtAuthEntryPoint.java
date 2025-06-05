@@ -1,4 +1,4 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

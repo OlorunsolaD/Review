@@ -1,10 +1,12 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,12 +15,15 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document(collection = "user")
 public class User {
+    @Id
     private String id;
+
     private String email;
     @JsonIgnore
     private String passwordHash;
     private String encryptedUserDetails;
-    @Builder.Default // Initialize roles set by default
-    private Set<String> roles = new HashSet<>(); // e.g., "ROLE_USER", "ROLE_ADMIN"
+    @Builder.Default
+    private Set<String> roles = new HashSet<>();
 }

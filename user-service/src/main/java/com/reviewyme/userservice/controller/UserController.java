@@ -1,6 +1,13 @@
-package com.reviewyme.userservice;
+// src/main/java/com/reviewyme/userservice/controller/UserController.java
+package com.reviewyme.userservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.reviewyme.userservice.auth.JwtTokenProvider;
+import com.reviewyme.userservice.dto.JwtAuthResponse;
+import com.reviewyme.userservice.dto.LoginRequest;
+import com.reviewyme.userservice.dto.SignupRequest;
+import com.reviewyme.userservice.model.UserDetails;
+import com.reviewyme.userservice.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import static com.reviewyme.userservice.controller.util.ControllerUtils.handleRegistrationRequest;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -29,26 +38,23 @@ public class UserController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/signup") // Existing endpoint for regular user signup
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        try {
-            // Use UserDetails record's builder to create an instance
-            UserDetails userDetails = UserDetails.builder()
-                    .firstName(request.firstName())
-                    .lastName(request.lastName())
-                    .address(request.address())
-                    .build();
+        return handleRegistrationRequest(
+                request,
+                userService::registerUser, // Pass method reference to the common handler
+                "User"
+        );
+    }
 
-            User registeredUser = userService.registerUser(request.email(), request.password(), userDetails); // Access record components
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully with ID: " + registeredUser.getId()); // Access record component
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Registration failed: " + e.getMessage());
-        }
-        catch (JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error processing user details: " + e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed: " + e.getMessage());
-        }
+    @PostMapping("/admin/signup") // New endpoint for Admin user signup - PROTECTED!
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> signupAdmin(@RequestBody SignupRequest request) {
+        return handleRegistrationRequest(
+                request,
+                userService::registerAdminUser, // Pass method reference to the common handler
+                "Admin user"
+        );
     }
 
     @PostMapping("/login")
@@ -60,7 +66,7 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthResponse(token)); // Use record constructor
+        return ResponseEntity.ok(new JwtAuthResponse(token));
     }
 
     @GetMapping("/profile")

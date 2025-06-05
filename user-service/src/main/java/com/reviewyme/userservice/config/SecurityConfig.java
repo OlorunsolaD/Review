@@ -1,5 +1,7 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.config;
 
+import com.reviewyme.userservice.auth.JwtAuthEntryPoint;
+import com.reviewyme.userservice.auth.JwtAuthenticationFilter;
 import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

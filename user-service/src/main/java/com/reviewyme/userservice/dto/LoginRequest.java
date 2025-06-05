@@ -1,4 +1,4 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.dto;
 
 import lombok.Builder;
 

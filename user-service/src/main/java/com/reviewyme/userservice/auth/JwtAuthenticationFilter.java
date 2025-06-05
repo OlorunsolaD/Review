@@ -1,5 +1,6 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.auth;
 
+import com.reviewyme.userservice.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
         // Check if Authorization header is present and starts with "Bearer "
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // Remove "Bearer " prefix
+            return bearerToken.substring(7);
         }
         return null;
     }

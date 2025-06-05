@@ -1,13 +1,14 @@
-package com.reviewyme.userservice;
+package com.reviewyme.userservice.auth;
 
-import io.jsonwebtoken.Claims; // Import Claims
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException; // Use specific SignatureException
+import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${security.jwt.secret}")
@@ -67,15 +69,15 @@ public class JwtTokenProvider {
                     .parseSignedClaims(authToken);
             return true;
         } catch (SignatureException ex) { // Pattern Matching for instanceof for more concise catch
-            System.err.println("Invalid JWT signature: " + ex.getMessage());
+            log.error("Invalid JWT signature: {}", ex.getMessage());
         } catch (MalformedJwtException ex) {
-            System.err.println("Invalid JWT token: " + ex.getMessage());
+            log.error("Invalid JWT token: {}", ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            System.err.println("Expired JWT token: " + ex.getMessage());
+            log.error("Expired JWT token: {}", ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            System.err.println("Unsupported JWT token: " + ex.getMessage());
+            log.error("Unsupported JWT token: {}", ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            System.err.println("JWT claims string is empty: " + ex.getMessage());
+            log.error("JWT claims string is empty: {}", ex.getMessage());
         }
         return false;
     }

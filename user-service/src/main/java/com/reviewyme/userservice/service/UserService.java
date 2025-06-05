@@ -75,7 +75,6 @@ public class UserService {
         return userRepository.findUserByEmail(email);
     }
 
-    // --- UPDATED METHOD USING MANUAL CONSTRUCTION ---
     public Optional<UserDetails> getUserDetails(String email) throws JsonProcessingException {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
         if (userOptional.isPresent()) {
@@ -86,8 +85,6 @@ public class UserService {
             // Read the decrypted JSON into a UserDetails object
             UserDetails userDetailsFromEncrypted = objectMapper.readValue(decryptedDetailsJson, UserDetails.class);
 
-            // Manually construct a NEW UserDetails object,
-            // setting the ID from the User record and copying other fields
             UserDetails userDetailsWithId = new UserDetails(
                     user.getId(), // Set the ID from the User record
                     userDetailsFromEncrypted.getFirstName(),

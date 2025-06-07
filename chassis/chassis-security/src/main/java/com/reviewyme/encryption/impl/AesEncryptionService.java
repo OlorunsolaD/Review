@@ -8,7 +8,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -24,9 +23,7 @@ public class AesEncryptionService implements EncryptionService {
 
     private final SecretKey secretKey;
 
-    public AesEncryptionService(@Value("${security.encryption.secret-key}") String base64SecretKey) throws NoSuchAlgorithmException {
-        // Security.addProvider(new BouncyCastleProvider());
-
+    public AesEncryptionService(@Value("${security.encryption.secret-key}") String base64SecretKey) {
         if (base64SecretKey == null || base64SecretKey.isEmpty()) {
             throw new IllegalArgumentException("Encryption secret key must be provided in application.yml or as an environment variable.");
         }

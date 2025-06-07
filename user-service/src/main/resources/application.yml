@@ -15,3 +15,13 @@ server:
 #    pathmatch:
 #      matching-strategy: ANT_PATH_MATCHER
 
+
+# src/main/resources/application.yml
+security:
+  encryption:
+    secret-key: CF6evcpoqZQwR2+PlSsZzgYwBkLqOMrBSwbDIBzlsGE=
+
+  jwt:
+    secret: VELfaPV9MAPiS4MkLvKm0qZiyZQkpTxwLM2MO8BS5sg=
+    expiration-ms: 3600000 # 1 hour
+

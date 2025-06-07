@@ -1,5 +1,6 @@
 package com.reviewyme.userservice.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,7 @@ public class UserDetails {
     private String firstName;
     private String lastName;
     private String address;
+    @JsonProperty("isExpert")
+    private boolean isExpert;
 
 }
